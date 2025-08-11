@@ -2,11 +2,22 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import multer from "multer";
+import path from "path";
 import Car, { ICar } from "./models/Car";
+
+interface MulterRequest extends Request {
+  file?: Express.Multer.File;
+}
+
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve a pasta uploads para acessar as imagens
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Conectar ao MongoDB
 mongoose
@@ -30,10 +41,23 @@ app.get(
 // Adicionar um carro
 app.post(
   "/api/cars",
-  async (req: Request, res: Response, next: NextFunction) => {
+  upload.single("imagem"),
+  async (req: MulterRequest, res: Response, next: NextFunction) => {
     try {
-      const { marca, modelo, ano, imagem } = req.body as ICar;
-      const newCar = new Car({ marca, modelo, ano, imagem });
+      const { marca, modelo, ano } = req.body as ICar;
+      const img = req.file;
+
+      if (!img || !marca || !modelo || !ano) {
+        return res.status(400).json({ error: "Dados incompletos" });
+      }
+
+      const newCar = new Car({
+        marca,
+        modelo,
+        ano,
+        imagem: `/uploads/${img.filename}`,
+      });
+
       const savedCar = await newCar.save();
       res.json(savedCar);
     } catch (error) {
