@@ -1,0 +1,23 @@
+:root {
+  --red: #e63946;
+  --gold: #ffd700;
+  --blue: #1e90ff;
+  --silver: #c0c0c0;
+  --black: #0d0d0d;
+}
+
+.text-car-gold {
+  color: var(--gold);
+}
+.bg-car-red {
+  background-color: var(--red);
+}
+.bg-car-blue {
+  background-color: var(--blue);
+}
+.bg-car-black {
+  background-color: var(--black);
+}
+.bg-car-silver {
+  background-color: var(--silver);
+}
