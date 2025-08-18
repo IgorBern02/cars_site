@@ -37,7 +37,7 @@ export const Card = ({
         <motion.button
           whileHover={{
             scale: 1.1,
-            boxShadow: `0px 0px 20px ${btnGlowColor}`, // vermelho glow
+            boxShadow: `0px 0px 20px ${btnGlowColor}`,
           }}
           transition={{ type: "spring", stiffness: 300 }}
           className={`${btnColor} ${btnHoverColor} text-white font-semibold 

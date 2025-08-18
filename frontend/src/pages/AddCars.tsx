@@ -18,6 +18,7 @@ export default function App() {
   const [message, setMessage] = useState<string | null>("");
   const [error, setError] = useState<string | null>("");
   const [preview, setPreview] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,16 +41,13 @@ export default function App() {
 
       setForm({ marca: "", modelo: "", ano: "" });
       setImagem(null);
-
-      // ✅ exibir mensagem de sucesso
+      setPreview(null);
+      setFileName("");
       setMessage("Carro adicionado com sucesso!");
       setTimeout(() => setMessage(null), 3000);
-      setError(null);
     } catch (err) {
-      // ❌ exibir mensagem de erro
       setError("Erro ao adicionar carro.");
       setTimeout(() => setError(null), 3000);
-      setMessage(null);
     }
   };
 
@@ -64,11 +62,33 @@ export default function App() {
   //   }
   // };
 
+  const formatFileName = (name: string) => {
+    const cleanName = name
+      .normalize("NFD") // separa acentos
+      .replace(/[\u0300-\u036f]/g, "") // remove acentos
+      .replace(/\s+/g, "_") // substitui espaços por underline
+      .toLowerCase();
+
+    const timestamp = Date.now();
+    const extension = name.split(".").pop(); // pega extensão
+    return `${cleanName.split(".")[0]}_${timestamp}.${extension}`;
+  };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImagem(file);
-      setPreview(URL.createObjectURL(file));
+      const originalFile = e.target.files[0];
+      const formattedName = formatFileName(originalFile.name);
+
+      // cria um novo File com o nome formatado
+      const fileWithFormattedName = new File([originalFile], formattedName, {
+        type: originalFile.type,
+      });
+
+      setImagem(fileWithFormattedName);
+      setPreview(URL.createObjectURL(fileWithFormattedName));
+    } else {
+      setImagem(null);
+      setPreview(null);
     }
   };
 
@@ -92,16 +112,24 @@ export default function App() {
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}
           handleFileChange={handleFileChange}
+          fileName={fileName}
+          setFileName={setFileName}
         />
       </div>
-      {message && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-4 rounded">
-          {message}
-        </div>
-      )}
-      {error && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white p-4 rounded">
-          {error}
+      {(message || error) && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-black/50 absolute inset-0"></div>{" "}
+          {/* fundo semi-transparente */}
+          <div className="bg-white rounded-lg p-6 z-10 max-w-sm w-full text-center shadow-lg">
+            <h2
+              className={`text-lg font-semibold mb-2 ${
+                message ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {message ? "Sucesso!" : "Erro!"}
+            </h2>
+            <p className="text-gray-800">{message || error}</p>
+          </div>
         </div>
       )}
     </div>

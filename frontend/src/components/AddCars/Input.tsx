@@ -1,4 +1,4 @@
-import type { PropsInput } from "../types/types";
+import type { PropsInput } from "../../types/addcars/types";
 import { useState } from "react";
 
 // Input
@@ -10,9 +10,11 @@ export const Input = ({
   value,
   onChange,
   accept,
+  fileName,
+  setFileName,
 }: PropsInput) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [fileName, setFileName] = useState<string>("");
+  // const [fileName, setFileName] = useState<string>("");
 
   if (type === "file") {
     return (
@@ -34,9 +36,9 @@ export const Input = ({
           name={name}
           onChange={(e) => {
             if (e.target.files && e.target.files[0]) {
-              setFileName(e.target.files[0].name);
+              setFileName?.(e.target.files[0].name);
             } else {
-              setFileName("");
+              setFileName?.("");
             }
             onChange?.(e);
           }}

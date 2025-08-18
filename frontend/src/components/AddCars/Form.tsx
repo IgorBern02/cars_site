@@ -1,5 +1,5 @@
-import { Button } from "../Button";
-import { Input } from "../Input";
+import { Button } from "../globals/Button";
+import { Input } from "./Input";
 import type { PropsForm } from "../../types/addcars/types";
 
 export const Form = ({
@@ -11,11 +11,13 @@ export const Form = ({
   handleFileChange,
   preview,
   setPreview,
+  fileName,
+  setFileName,
 }: PropsForm) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col items-center justify-start gap-6 w-full max-w-md p-6 bg-white/10 backdrop-blur-md rounded-lg"
+      className="flex flex-col items-center justify-center gap-6 w-full h-full md:h-auto max-w-md p-6 bg-white/10 backdrop-blur-md rounded-lg"
     >
       <section className="gap-5 flex flex-col w-full">
         <Input
@@ -51,39 +53,38 @@ export const Form = ({
         onChange={handleFileChange}
         accept="image/*"
         className="text-white"
+        fileName={fileName}
+        setFileName={setFileName}
       />
 
       {preview && (
         <div className="flex flex-col items-center mt-2">
           <img
-            src={preview} // ✅ usar a variável preview, não setPreview
+            src={preview}
             alt="Pré-visualização"
-            className="w-48 h-48 object-cover rounded border border-gray-300"
+            className="w-full h-48 object-cover rounded-t-lg border border-gray-300"
           />
-          {/* <button
-            type="button"
-            className="mt-2 text-red-500 hover:text-red-700"
-            }onClick={() => {
-              setImagem(null);
-              setPreview(null);
-              setForm({ ...form });
-            }
-          > */}
+
           <Button
             type="button"
             text="Remover imagem"
             onClick={() => {
               setImagem(null);
               setPreview(null);
+              setFileName("");
               setForm({ ...form });
             }}
           />
-
-          {/* </button> */}
         </div>
       )}
 
-      <Button type="submit" text="Adicionar" />
+      <Button
+        type="submit"
+        text="Adicionar"
+        btnColor="bg-car-red"
+        btnHoverColor="hover:bg-car-blue"
+        btnGlowColor="rgba(230, 57, 70, 0.7)"
+      />
     </form>
   );
 };
