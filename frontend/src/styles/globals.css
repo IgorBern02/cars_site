@@ -9,6 +9,9 @@
 .text-car-gold {
   color: var(--gold);
 }
+.text-red {
+  color: var(--red);
+}
 .bg-car-red {
   background-color: var(--red);
 }
@@ -20,4 +23,10 @@
 }
 .bg-car-silver {
   background-color: var(--silver);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

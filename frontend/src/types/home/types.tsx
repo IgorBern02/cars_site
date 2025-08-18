@@ -6,4 +6,6 @@ export interface CardProps {
   btnColor: string;
   btnHoverColor: string;
   btnGlowColor: string;
+  widthCard: string;
+  heightCard: string;
 }

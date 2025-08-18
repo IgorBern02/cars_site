@@ -10,6 +10,8 @@ export const Card = ({
   btnColor,
   btnHoverColor,
   btnGlowColor,
+  widthCard: w,
+  heightCard: h,
 }: CardProps) => {
   return (
     <motion.div
@@ -22,7 +24,9 @@ export const Card = ({
         className="flex flex-col items-center justify-center p-6 rounded-2xl shadow-2xl 
                      bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-300 hover:scale-105"
       >
-        <div className="w-40 h-40 md:w-60 md:h-60 flex items-center justify-center">
+        <div
+          className={`${w} ${h} md:w-60 md:h-60 flex items-center justify-center`}
+        >
           <img
             src={`/images/${img}`}
             alt="logo"

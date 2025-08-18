@@ -4,9 +4,11 @@ import type { ChangeEvent, FormEvent } from "react";
 export type PropsInput = {
   type: string;
   name?: string;
-  placeholder?: string;
+  placeholderLabel?: string;
+  placeholderInput?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 };
 
 // Button
