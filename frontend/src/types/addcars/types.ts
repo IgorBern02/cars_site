@@ -11,4 +11,6 @@ export type PropsForm = {
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void | Promise<void>;
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  preview?: string | null;
+  setPreview: (preview: string | null) => void;
 };

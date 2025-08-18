@@ -9,6 +9,7 @@ export const Input = ({
   placeholderInput,
   value,
   onChange,
+  accept,
 }: PropsInput) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("");
@@ -71,6 +72,7 @@ export const Input = ({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        accept={accept}
         className="w-full border h-12 bg-gray-200 text-gray-900 p-2 rounded outline-none appearance-none focus:border-blue-400"
       />
     </section>

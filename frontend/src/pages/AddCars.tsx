@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Form } from "../components/addcars/Form";
 
@@ -17,6 +17,7 @@ export default function App() {
   const [imagem, setImagem] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>("");
   const [error, setError] = useState<string | null>("");
+  const [preview, setPreview] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -47,7 +48,7 @@ export default function App() {
     } catch (err) {
       // ❌ exibir mensagem de erro
       setError("Erro ao adicionar carro.");
-      setTimeout(() => setMessage(null), 3000);
+      setTimeout(() => setError(null), 3000);
       setMessage(null);
     }
   };
@@ -57,11 +58,26 @@ export default function App() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setImagem(e.target.files[0]);
+  //   }
+  // };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImagem(e.target.files[0]);
+      const file = e.target.files[0];
+      setImagem(file);
+      setPreview(URL.createObjectURL(file));
     }
   };
+
+  // liberar memória quando trocar de imagem ou desmontar componente
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   return (
     <div className="mx-auto flex flex-row items-center justify-center h-screen">
@@ -70,6 +86,8 @@ export default function App() {
           form={form}
           setForm={setForm}
           imagem={imagem}
+          preview={preview}
+          setPreview={setPreview}
           setImagem={setImagem}
           handleSubmit={handleSubmit}
           handleInputChange={handleInputChange}

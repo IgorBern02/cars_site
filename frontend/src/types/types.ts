@@ -9,12 +9,14 @@ export type PropsInput = {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  accept?: string;
 };
 
 // Button
 export type PropsButton = {
   text: string;
   type: "submit" | "reset" | "button";
+  onClick?: () => void;
 };
 
 // Form
@@ -30,4 +32,5 @@ export type PropsForm = {
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void | Promise<void>;
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  preview?: string | null;
 };
