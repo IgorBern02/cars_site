@@ -48,6 +48,7 @@ export default function App() {
       setFileName("");
       setMessage("Carro adicionado com sucesso!");
       setTimeout(() => setMessage(null), 3000);
+      console.log(import.meta.env.VITE_API_URL);
     } catch (err) {
       setError("Erro ao adicionar carro.");
       setTimeout(() => setError(null), 3000);
