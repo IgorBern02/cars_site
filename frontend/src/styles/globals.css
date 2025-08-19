@@ -25,6 +25,10 @@
   background-color: var(--silver);
 }
 
+.bg-cars-gradient {
+  background: linear-gradient(to bottom right, #0f0c29, #302b63, #24243e);
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

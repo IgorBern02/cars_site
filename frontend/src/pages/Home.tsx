@@ -16,7 +16,7 @@ export default function Home() {
         btnColor="bg-car-red"
         btnHoverColor="hover:bg-car-blue"
         btnGlowColor="rgba(230, 57, 70, 0.7)"
-        widthCard="w-40"
+        widthCard="w-60"
         heightCard="h-40"
       />
       <Card
@@ -27,8 +27,8 @@ export default function Home() {
         btnColor="bg-car-blue"
         btnHoverColor="hover:bg-car-blue"
         btnGlowColor="rgba(30, 144, 255, 0.7)"
-        widthCard="w-46"
-        heightCard="h-46"
+        widthCard="w-60"
+        heightCard="h-40"
       />
     </section>
   );

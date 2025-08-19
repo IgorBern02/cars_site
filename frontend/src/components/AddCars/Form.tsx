@@ -17,7 +17,7 @@ export const Form = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col items-center justify-center gap-6 w-full h-full md:h-auto max-w-md p-6 bg-white/10 backdrop-blur-md rounded-lg"
+      className="flex flex-col items-center justify-center gap-6 w-full h-full md:h-auto max-w-md p-6 md:bg-white/10 md:backdrop-blur-md rounded-lg"
     >
       <section className="gap-5 flex flex-col w-full">
         <Input

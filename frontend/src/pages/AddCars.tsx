@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Form } from "../components/addcars/Form";
+import { Link } from "react-router-dom";
+import { FaAngleLeft } from "react-icons/fa";
 
 interface FormState {
   marca: string;
@@ -100,8 +102,17 @@ export default function App() {
   }, [preview]);
 
   return (
-    <div className="mx-auto flex flex-row items-center justify-center h-screen">
-      <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] ">
+    <div className="flex flex-col min-h-screen w-full bg-cars-gradient">
+      <header className="p-4">
+        <Link
+          to="/"
+          className="inline-block p-2 rounded cursor-pointer transition-all duration-300 shadow-lg bg-black/20 hover:bg-black/40"
+        >
+          <FaAngleLeft className="text-white" size={25} />
+        </Link>
+      </header>
+
+      <main className="flex flex-1 items-center justify-center">
         <Form
           form={form}
           setForm={setForm}
@@ -115,11 +126,11 @@ export default function App() {
           fileName={fileName}
           setFileName={setFileName}
         />
-      </div>
+      </main>
+
       {(message || error) && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-black/50 absolute inset-0"></div>{" "}
-          {/* fundo semi-transparente */}
+          <div className="bg-black/50 absolute inset-0"></div>
           <div className="bg-white rounded-lg p-6 z-10 max-w-sm w-full text-center shadow-lg">
             <h2
               className={`text-lg font-semibold mb-2 ${
