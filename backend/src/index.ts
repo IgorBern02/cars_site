@@ -26,7 +26,12 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://cars-site-ochre.vercel.app/",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(express.json());
 
 // Serve a pasta uploads para acessar as imagens
