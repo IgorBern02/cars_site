@@ -1,47 +1,61 @@
+// src/server.ts
 import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import multer from "multer";
-import path from "path";
+import streamifier from "streamifier";
 import Car, { ICar } from "./models/Car";
+import { v2 as cloudinary } from "cloudinary";
 
+// Tipagem para requests com Multer
 interface MulterRequest extends Request {
   file?: Express.Multer.File;
 }
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/"); // Pasta onde salvar
-//   },
-//   filename: (req, file, cb) => {
-//     const ext = path.extname(file.originalname); // Pega a extensão original (.jpg, .png, etc)
-//     const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + ext;
-//     cb(null, uniqueName);
-//   },
-// });
-
-const storage = multer.memoryStorage();
-export const upload = multer({ storage });
+// Tipagem para resultado de upload Cloudinary
+interface CloudinaryUploadResult {
+  public_id: string;
+  version: number;
+  signature: string;
+  width: number;
+  height: number;
+  format: string;
+  resource_type: string;
+  created_at: string;
+  tags: string[];
+  bytes: number;
+  type: string;
+  etag: string;
+  placeholder: boolean;
+  url: string;
+  secure_url: string;
+  folder?: string;
+  original_filename: string;
+}
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve a pasta uploads para acessar as imagens
-app.use("/uploads", express.static(path.resolve("uploads")));
+// Multer em memória (para funcionar na Vercel)
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Conectar ao MongoDB
-// mongoose
-//   .connect(process.env.MONGODB_URI as string)
-//   .then(() => console.log("✅ Conectado ao MongoDB"))
-//   .catch((err) => console.error("Erro ao conectar:", err));
-
-// Listar todos os carros
-app.get("/", (req: Request, res: Response) => {
-  res.send("API de Carros");
+// Configuração Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
 });
 
+// ================== ROTAS ==================
+
+// Health check
+app.get("/", (req: Request, res: Response) => {
+  res.send("🚀 API de Carros rodando!");
+});
+
+// Listar todos os carros
 app.get(
   "/api/cars",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -68,95 +82,70 @@ app.get(
   }
 );
 
-// Adicionar um carro
-// app.post(
-//   "/api/cars",
-//   upload.single("imagem"),
-//   async (req: MulterRequest, res: Response, next: NextFunction) => {
-//     try {
-//       const { marca, modelo, ano } = req.body as ICar;
-//       const img = req.file;
-
-//       console.log("BODY:", req.body);
-//       console.log("FILE:", req.file);
-
-//       if (!img || !marca || !modelo || !ano) {
-//         return res.status(400).json({ error: "Dados incompletos" });
-//       }
-
-//       const newCar = new Car({
-//         marca,
-//         modelo,
-//         ano,
-//         imagem: `/uploads/${img.filename}`,
-//       });
-
-//       const savedCar = await newCar.save();
-//       res.json(savedCar);
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
-
-import cloudinary from "./cloudinary";
-
+// Adicionar um carro (com upload para Cloudinary)
 app.post(
   "/api/cars",
   upload.single("imagem"),
   async (req: MulterRequest, res: Response, next: NextFunction) => {
     try {
-      const { marca, modelo, ano } = req.body as ICar;
-      const img = req.file;
+      const { marca, modelo, ano } = req.body;
+      const file = req.file;
 
-      if (!img || !marca || !modelo || !ano) {
+      if (!file || !marca || !modelo || !ano) {
         return res.status(400).json({ error: "Dados incompletos" });
       }
 
-      // Faz upload no Cloudinary usando buffer
-      const uploadResult = await new Promise<any>((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: "cars" }, // 👈 Pasta criada automaticamente
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "cars" },
+        async (
+          error: Error | undefined,
+          result: CloudinaryUploadResult | undefined
+        ) => {
+          if (error || !result) {
+            console.error("❌ Erro Cloudinary:", error || "Resultado vazio");
+            return res.status(500).json({ error: "Falha no upload da imagem" });
           }
-        );
-        stream.end(img.buffer);
-      });
 
-      const newCar = new Car({
-        marca,
-        modelo,
-        ano,
-        imagem: uploadResult.secure_url, // 👈 URL final da imagem
-      });
+          const newCar = new Car({
+            marca,
+            modelo,
+            ano,
+            imagem: result.secure_url,
+          });
 
-      const savedCar = await newCar.save();
-      res.json(savedCar);
-    } catch (error) {
+          const savedCar = await newCar.save();
+          res.json(savedCar);
+        }
+      );
+
+      streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    } catch (error: unknown) {
+      if (error instanceof Error)
+        console.error("🔥 Erro no servidor:", error.message);
+      else console.error("🔥 Erro desconhecido no servidor:", error);
       next(error);
     }
   }
 );
 
 // Middleware de erro
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(error.message);
-  res.status(500).json({ error: "Ocorreu um erro no servidor" });
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof Error) {
+    console.error("🔥 Erro no servidor:", error.message);
+    res.status(500).json({ error: error.message });
+  } else {
+    console.error("🔥 Erro desconhecido no servidor:", error);
+    res.status(500).json({ error: "Ocorreu um erro no servidor" });
+  }
 });
 
-// const PORT = process.env.PORT || 3001;
-// app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
+// ================== SERVER INIT ==================
 const PORT = process.env.PORT || 3001;
 
 async function startServer() {
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
-    console.error(
-      "❌ MONGODB_URI não definido! Verifique as variáveis de ambiente."
-    );
+    console.error("❌ MONGODB_URI não definido!");
     process.exit(1);
   }
 
