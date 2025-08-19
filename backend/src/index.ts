@@ -10,8 +10,6 @@ interface MulterRequest extends Request {
   file?: Express.Multer.File;
 }
 
-// const upload = multer({ dest: "uploads/" });
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // Pasta onde salvar
@@ -33,10 +31,10 @@ app.use(express.json());
 app.use("/uploads", express.static(path.resolve("uploads")));
 
 // Conectar ao MongoDB
-mongoose
-  .connect(process.env.MONGODB_URI as string)
-  .then(() => console.log("✅ Conectado ao MongoDB"))
-  .catch((err) => console.error("Erro ao conectar:", err));
+// mongoose
+//   .connect(process.env.MONGODB_URI as string)
+//   .then(() => console.log("✅ Conectado ao MongoDB"))
+//   .catch((err) => console.error("Erro ao conectar:", err));
 
 // Listar todos os carros
 app.get("/", (req: Request, res: Response) => {
@@ -103,5 +101,31 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ error: "Ocorreu um erro no servidor" });
 });
 
+// const PORT = process.env.PORT || 3001;
+// app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+async function startServer() {
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) {
+    console.error(
+      "❌ MONGODB_URI não definido! Verifique as variáveis de ambiente."
+    );
+    process.exit(1);
+  }
+
+  try {
+    await mongoose.connect(mongoUri);
+    console.log("✅ Conectado ao MongoDB");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Erro ao conectar ao MongoDB:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
