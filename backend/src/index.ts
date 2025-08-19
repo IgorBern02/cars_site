@@ -10,17 +10,18 @@ interface MulterRequest extends Request {
   file?: Express.Multer.File;
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Pasta onde salvar
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // Pega a extensão original (.jpg, .png, etc)
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + ext;
-    cb(null, uniqueName);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/"); // Pasta onde salvar
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = path.extname(file.originalname); // Pega a extensão original (.jpg, .png, etc)
+//     const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + ext;
+//     cb(null, uniqueName);
+//   },
+// });
 
+const storage = multer.memoryStorage();
 export const upload = multer({ storage });
 
 const app = express();
@@ -68,6 +69,38 @@ app.get(
 );
 
 // Adicionar um carro
+// app.post(
+//   "/api/cars",
+//   upload.single("imagem"),
+//   async (req: MulterRequest, res: Response, next: NextFunction) => {
+//     try {
+//       const { marca, modelo, ano } = req.body as ICar;
+//       const img = req.file;
+
+//       console.log("BODY:", req.body);
+//       console.log("FILE:", req.file);
+
+//       if (!img || !marca || !modelo || !ano) {
+//         return res.status(400).json({ error: "Dados incompletos" });
+//       }
+
+//       const newCar = new Car({
+//         marca,
+//         modelo,
+//         ano,
+//         imagem: `/uploads/${img.filename}`,
+//       });
+
+//       const savedCar = await newCar.save();
+//       res.json(savedCar);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+import cloudinary from "./cloudinary";
+
 app.post(
   "/api/cars",
   upload.single("imagem"),
@@ -80,11 +113,23 @@ app.post(
         return res.status(400).json({ error: "Dados incompletos" });
       }
 
+      // Faz upload no Cloudinary usando buffer
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "cars" }, // 👈 Pasta criada automaticamente
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(img.buffer);
+      });
+
       const newCar = new Car({
         marca,
         modelo,
         ano,
-        imagem: `/uploads/${img.filename}`,
+        imagem: uploadResult.secure_url, // 👈 URL final da imagem
       });
 
       const savedCar = await newCar.save();
