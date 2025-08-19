@@ -39,6 +39,10 @@ mongoose
   .catch((err) => console.error("Erro ao conectar:", err));
 
 // Listar todos os carros
+app.get("/", (req: Request, res: Response) => {
+  res.send("API de Carros");
+});
+
 app.get(
   "/api/cars",
   async (req: Request, res: Response, next: NextFunction) => {
