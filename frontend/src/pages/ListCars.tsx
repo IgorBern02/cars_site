@@ -7,9 +7,10 @@ import type { Car } from "../types/listcars/types";
 export default function App() {
   const [cars, setCars] = useState<Car[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/cars")
+    fetch(`${API_URL}/api/cars`)
       .then((res) => res.json())
       .then((data: Car[]) => setCars(data));
   }, []);

@@ -21,6 +21,7 @@ export default function App() {
   const [error, setError] = useState<string | null>("");
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,7 +35,7 @@ export default function App() {
     }
 
     try {
-      const res = await fetch("http://localhost:3001/api/cars", {
+      const res = await fetch(`${API_URL}/api/cars`, {
         method: "POST",
         body: formData,
       });

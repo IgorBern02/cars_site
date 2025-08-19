@@ -1,4 +1,4 @@
-import type { PropsButton } from "../types/globals/types";
+import type { PropsButton } from "../../types/globals/types";
 import { motion } from "framer-motion";
 
 export const Button = ({
