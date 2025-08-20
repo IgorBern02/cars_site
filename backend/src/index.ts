@@ -39,7 +39,6 @@ const app = express();
 const allowedOrigins = [
   "https://cars-site-ochre.vercel.app",
   "http://localhost:5173",
-  "https://cars-site-8wk5.onrender.com",
 ];
 app.use(
   cors({
@@ -54,6 +53,11 @@ app.use(
   })
 );
 app.use(express.json());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 // Multer em memória (para funcionar na Vercel)
 const upload = multer({ storage: multer.memoryStorage() });
