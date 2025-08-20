@@ -38,7 +38,8 @@ const app = express();
 
 const allowedOrigins = [
   "https://cars-site-ochre.vercel.app",
-  "http://localhost:5173", // pra dev
+  "http://localhost:5173",
+  "https://cars-site-8wk5.onrender.com",
 ];
 app.use(
   cors({
