@@ -77,6 +77,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Multer em memória (para funcionar na Vercel)
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Antes de configurar o Cloudinary, adicione:
+console.log("🔑 Configurando Cloudinary...");
+console.log(
+  "Cloud Name:",
+  process.env.CLOUD_NAME ? "✅ Definido" : "❌ Faltando"
+);
+console.log(
+  "API Key:",
+  process.env.CLOUD_API_KEY ? "✅ Definido" : "❌ Faltando"
+);
+console.log(
+  "API Secret:",
+  process.env.CLOUD_API_SECRET ? "✅ Definido" : "❌ Faltando"
+);
+
 // Configuração Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
