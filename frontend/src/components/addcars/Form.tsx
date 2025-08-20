@@ -13,6 +13,8 @@ export const Form = ({
   setPreview,
   fileName,
   setFileName,
+  anoError,
+  currentYear,
 }: PropsForm) => {
   return (
     <form
@@ -27,6 +29,7 @@ export const Form = ({
           placeholderInput="Digite a marca aqui..."
           value={form.marca}
           onChange={handleInputChange}
+          required
         />
 
         <Input
@@ -36,6 +39,7 @@ export const Form = ({
           placeholderInput="Digite o modelo aqui..."
           value={form.modelo}
           onChange={handleInputChange}
+          required
         />
 
         <Input
@@ -45,7 +49,15 @@ export const Form = ({
           placeholderInput="Digite o ano aqui..."
           value={form.ano}
           onChange={handleInputChange}
+          className={`p-2 rounded border ${
+            anoError ? "border-red-500" : "border-gray-300"
+          }`}
+          max={currentYear}
+          required
         />
+        {anoError && (
+          <span className="text-red-500 text-sm mt-1">{anoError}</span>
+        )}
       </section>
 
       <Input

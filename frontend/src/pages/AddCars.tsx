@@ -21,6 +21,7 @@ export default function App() {
   const [error, setError] = useState<string | null>("");
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [anoError, setAnoError] = useState<string | null>(null);
   const API_URL = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e: FormEvent) => {
@@ -61,14 +62,19 @@ export default function App() {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const currentYear = new Date().getFullYear();
+
+    if (name === "ano") {
+      if (Number(value) > currentYear + 1) {
+        setAnoError(`Ano inválido. O máximo permitido é ${currentYear + 1}.`);
+        return; // não atualiza o estado do form
+      } else {
+        setAnoError(null);
+      }
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
-
-  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     setImagem(e.target.files[0]);
-  //   }
-  // };
 
   const formatFileName = (name: string) => {
     const cleanName = name
@@ -131,6 +137,8 @@ export default function App() {
           handleFileChange={handleFileChange}
           fileName={fileName}
           setFileName={setFileName}
+          anoError={anoError}
+          currentYear={new Date().getFullYear()}
         />
       </main>
 

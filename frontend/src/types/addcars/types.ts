@@ -12,6 +12,8 @@ export type PropsInput = {
   accept?: string;
   fileName?: string;
   setFileName?: (fileName: string) => void;
+  max?: number;
+  required?: boolean;
 };
 
 export type PropsForm = {
@@ -30,4 +32,6 @@ export type PropsForm = {
   setPreview: (preview: string | null) => void;
   setFileName: (fileName: string) => void;
   fileName: string;
+  anoError?: string | null;
+  currentYear?: number;
 };
