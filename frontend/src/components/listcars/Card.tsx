@@ -10,9 +10,13 @@ export const Card = ({ car }: PropsCar) => {
         {car.marca} {car.modelo} ({car.ano})
       </h2>
       <img
-        src={`http://localhost:3001${car.imagem}`}
-        alt={car.modelo}
+        src={car.imagem}
+        alt={`${car.marca} ${car.modelo}`}
         className="w-[300px] h-[200px] object-cover rounded-md"
+        onError={(e) => {
+          e.currentTarget.src =
+            "https://via.placeholder.com/300x200?text=Imagem+Não+Disponível";
+        }}
       />
     </div>
   );
