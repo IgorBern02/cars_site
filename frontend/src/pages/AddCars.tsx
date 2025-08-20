@@ -40,6 +40,10 @@ export default function App() {
         body: formData,
       });
 
+      const data = await res.json().catch(() => ({}));
+      console.log("Status:", res.status);
+      console.log("Resposta do backend:", data);
+
       if (!res.ok) throw new Error("Erro ao adicionar o carro");
 
       setForm({ marca: "", modelo: "", ano: "" });
