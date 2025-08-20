@@ -77,26 +77,29 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Multer em memória (para funcionar na Vercel)
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Antes de configurar o Cloudinary, adicione:
-console.log("🔑 Configurando Cloudinary...");
-console.log(
-  "Cloud Name:",
-  process.env.CLOUD_NAME ? "✅ Definido" : "❌ Faltando"
-);
-console.log(
-  "API Key:",
-  process.env.CLOUD_API_KEY ? "✅ Definido" : "❌ Faltando"
-);
-console.log(
-  "API Secret:",
-  process.env.CLOUD_API_SECRET ? "✅ Definido" : "❌ Faltando"
-);
+// Adicione esta rota ANTES das outras rotas
+app.get("/debug", (req: Request, res: Response) => {
+  console.log("🔍 Debug - Variáveis de ambiente:");
+  console.log("CLOUD_NAME:", process.env.CLOUD_NAME || "❌ Não definido");
+  console.log(
+    "CLOUD_API_KEY:",
+    process.env.CLOUD_API_KEY ? "✅ Definido" : "❌ Não definido"
+  );
+  console.log(
+    "CLOUD_API_SECRET:",
+    process.env.CLOUD_API_SECRET ? "✅ Definido" : "❌ Não definido"
+  );
+  console.log(
+    "MONGODB_URI:",
+    process.env.MONGODB_URI ? "✅ Definido" : "❌ Não definido"
+  );
 
-// Configuração Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
+  res.json({
+    cloud_name: process.env.CLOUD_NAME || "Não definido",
+    api_key: process.env.CLOUD_API_KEY ? "Definido" : "Não definido",
+    api_secret: process.env.CLOUD_API_SECRET ? "Definido" : "Não definido",
+    mongodb_uri: process.env.MONGODB_URI ? "Definido" : "Não definido",
+  });
 });
 
 // ================== ROTAS ==================
