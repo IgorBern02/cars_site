@@ -35,7 +35,23 @@ interface CloudinaryUploadResult {
 }
 
 const app = express();
-app.use(cors({ origin: "cars-site-ochre.vercel.app" }));
+
+const allowedOrigins = [
+  "https://cars-site-ochre.vercel.app",
+  "http://localhost:5173", // pra dev
+];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS não permitido"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(express.json());
 
 // Multer em memória (para funcionar na Vercel)
