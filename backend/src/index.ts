@@ -142,8 +142,21 @@ app.post(
   upload.single("imagem"),
   async (req: MulterRequest, res: Response, next: NextFunction) => {
     try {
+      cloudinary.config({
+        cloud_name: process.env.CLOUD_NAME!,
+        api_key: process.env.CLOUD_API_KEY!,
+        api_secret: process.env.CLOUD_API_SECRET!,
+      });
+
       const { marca, modelo, ano } = req.body;
       const file = req.file;
+
+      console.log("📦 Recebendo requisição...", { marca, modelo, ano });
+      console.log("🔑 Cloudinary config:", {
+        cloud: process.env.CLOUD_NAME,
+        hasKey: !!process.env.CLOUD_API_KEY,
+        hasSecret: !!process.env.CLOUD_API_SECRET,
+      });
 
       if (!file || !marca || !modelo || !ano) {
         return res.status(400).json({ error: "Dados incompletos" });
