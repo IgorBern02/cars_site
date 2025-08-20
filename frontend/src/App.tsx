@@ -6,7 +6,7 @@ import ListCars from "./pages/ListCars";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_PATH}>
       {/* <nav>
         <Link to="/">Home</Link> | <Link to="/addcars">Sobre</Link>
       </nav> */}
