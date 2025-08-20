@@ -38,6 +38,7 @@ const app = express();
 
 const allowedOrigins = [
   "https://cars-site-ochre.vercel.app",
+  "https://cars-site-heqsiq47t-igors-projects-e5d6fb4d.vercel.app",
   "http://localhost:5173",
 ];
 app.use(
