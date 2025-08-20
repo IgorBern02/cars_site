@@ -1,20 +1,22 @@
-# Cars Site - Ochre
+🚗 Cars Site - Ochre
 
-Um site moderno de catálogo de carros, permitindo visualizar modelos, marcas e anos.
+Catálogo de carros com interface moderna, permitindo busca, filtragem e visualização detalhada de modelos, marcas, anos e imagens.
 
-## Funcionalidades
+📌 Funcionalidades
 
-- Listagem de carros com detalhes (marca, modelo, ano, imagem)
-- Busca e filtragem por marca ou modelo
-- Interface responsiva e moderna
-- Implementado com React, Tailwind CSS e TypeScript
+- Listagem de carros: Exibe detalhes como marca, modelo, ano e imagem.
 
-## Tecnologias
+- Busca e filtragem: Permite localizar carros por marca ou modelo.
 
-- React
-- TypeScript
-- Tailwind CSS
-- Vercel (deploy)
+- Interface responsiva: Adaptada para dispositivos móveis e desktop.
+
+- Design moderno: Utiliza Tailwind CSS para um visual clean e eficiente.
+
+⚙️ Tecnologias Utilizadas
+
+Frontend: React, TypeScript, Tailwind CSS
+Backend: Node.js (Express)
+Deploy: Vercel
 
 ## Deploy
 
@@ -25,7 +27,8 @@ O site está disponível em: [https://cars-site-ochre.vercel.app](https://cars-s
 1. Clone o repositório:
 
 ```bash
-git clone <seu-repo-url>
+git clone https://github.com/IgorBern02/cars_site.git
+cd cars_site
 ```
 
 2. Instale as dependências:
@@ -38,5 +41,10 @@ npm install
 ```bash
 npm install
 ```
+🌐 Acesse Online
 
-O projeto será aberto em http://localhost:3000.
+O projeto está hospedado em Vercel:
+👉 https://cars-site-ochre.vercel.app
+
+🤝 Contribuições
+Sinta-se à vontade para contribuir! Abra uma issue ou envie um pull request com melhorias ou correções.
