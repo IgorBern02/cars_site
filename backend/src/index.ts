@@ -35,7 +35,7 @@ interface CloudinaryUploadResult {
 }
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "cars-site-ochre.vercel.app" }));
 app.use(express.json());
 
 // Multer em memória (para funcionar na Vercel)
