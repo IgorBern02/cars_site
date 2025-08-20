@@ -37,20 +37,34 @@ interface CloudinaryUploadResult {
 const app = express();
 
 const allowedOrigins = [
-  "https://cars-site-ochre.vercel.app",
-  "https://cars-site-heqsiq47t-igors-projects-e5d6fb4d.vercel.app",
+  "https://cars-site-ochre.vercel.app", // URL principal
+  /\.vercel\.app$/, // ← TODOS os subdomínios do Vercel
   "http://localhost:5173",
 ];
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+
+      // Verifica se a origem corresponde a algum padrão
+      const isAllowed = allowedOrigins.some((pattern) => {
+        if (typeof pattern === "string") {
+          return origin === pattern;
+        } else if (pattern instanceof RegExp) {
+          return pattern.test(origin);
+        }
+        return false;
+      });
+
+      if (isAllowed) {
         callback(null, true);
       } else {
+        console.log("CORS bloqueado para origem:", origin);
         callback(new Error("CORS não permitido"));
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // ← Adicione esta linha também
   })
 );
 app.use(express.json());
